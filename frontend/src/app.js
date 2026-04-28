@@ -1,5 +1,5 @@
 function App() {
-  return <h1>🚀 App Running</h1>;
+  return <h1>🚀 GKE Deployment Successful</h1>;
 }
 
 export default App;
