@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: gcr.io/project-0c1e76db-5b7c-4ea3-86e/backend:latest
+        image: us-central1-docker.pkg.dev/project-0c1e76db-5b7c-4ea3-86e/my-repo/backend:latest
         ports:
         - containerPort: 5000
 ---
