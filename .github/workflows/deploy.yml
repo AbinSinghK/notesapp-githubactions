@@ -29,13 +29,13 @@ jobs:
 
     - name: Build & Push Backend
       run: |
-        docker build -t gcr.io/${{ secrets.PROJECT_ID }}/backend ./backend
-        docker push gcr.io/${{ secrets.PROJECT_ID }}/backend
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/my-repo/backend ./backend
+        docker push us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/my-repo/backend
 
     - name: Build & Push Frontend
       run: |
-        docker build -t gcr.io/${{ secrets.PROJECT_ID }}/frontend ./frontend
-        docker push gcr.io/${{ secrets.PROJECT_ID }}/frontend
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/my-repo/frontend ./frontend
+        docker push us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/my-repo/frontend
 
     - name: Deploy to GKE
       run: |
