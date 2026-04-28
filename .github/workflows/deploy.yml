@@ -1,0 +1,37 @@
+name: Deploy to GKE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Auth GCP (OIDC)
+      uses: google-github-actions/auth@v2
+      with:
+        workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+        service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker
+
+    - name: Build & Push Backend
+      run: |
+        docker build -t gcr.io/${{ secrets.PROJECT_ID }}/backend ./backend
+        docker push gcr.io/${{ secrets.PROJECT_ID }}/backend
+
+    - name: Build & Push Frontend
+      run: |
+        docker build -t gcr.io/${{ secrets.PROJECT_ID }}/frontend ./frontend
+        docker push gcr.io/${{ secrets.PROJECT_ID }}/frontend
+
+    - name: Deploy to GKE
+      run: |
+        gcloud container clusters get-credentials ${{ secrets.CLUSTER }} --zone ${{ secrets.ZONE }}
+        kubectl apply -f k8s/
