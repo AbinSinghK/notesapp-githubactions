@@ -9,8 +9,6 @@ permissions:
   id-token: write
   contents: read
 
-  
-    
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -24,8 +22,9 @@ jobs:
         workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
         service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
+    # 🔥 FIXED (SPECIFIC REGION)
     - name: Configure Docker
-      run: gcloud auth configure-docker
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
     - name: Build & Push Backend
       run: |
@@ -37,7 +36,10 @@ jobs:
         docker build -t us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/my-repo/frontend ./frontend
         docker push us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/my-repo/frontend
 
-    - name: Deploy to GKE
+    - name: Get GKE Credentials
       run: |
-        gcloud container clusters get-credentials ${{ secrets.CLUSTER }} --zone ${{ secrets.ZONE }}
-        kubectl apply -f k8s/
+        gcloud container clusters get-credentials ${{ secrets.CLUSTER }} \
+        --zone ${{ secrets.ZONE }}
+
+    - name: Deploy to GKE
+      run: kubectl apply -f k8s/
